@@ -1,0 +1,3 @@
+node_modules
+./request-test.rest
+nodemon.json
