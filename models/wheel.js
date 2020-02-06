@@ -20,7 +20,8 @@ const spokeSchema = new Schema ({
     lat:  {type: Number, required: true},
     lng:  {type: Number, required: true}
   },
-  rating: {type: Number}
+  rating: {type: Number},
+  spot: {type: mongoose.Types.ObjectId, required: true, ref: 'Spot'},
 }, {timestamps: true});
 
 const wheelSchema = new Schema ({

@@ -2,11 +2,15 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 
 const spokesRoutes = require('./routes/spokes-routes.js');
+const tripsRoutes = require('./routes/trips-routes.js');
+const wheelsRoutes = require('./routes/wheels-routes.js');
 
 const app = express();
 
+app.use(morgan('combined'));
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -17,6 +21,8 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/spokes', spokesRoutes);
+app.use('/api/trips', tripsRoutes);
+app.use('/api/wheels', wheelsRoutes);
 
 
 mongoose.connect(process.env.SPOKET_MONGO_DB_URL, { useNewUrlParser: true })
