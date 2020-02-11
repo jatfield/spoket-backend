@@ -9,7 +9,9 @@ const postSpoke = async (req, res, next) => {
   //check user
   console.log('POST spoke');
 
-  let image = req.file;
+  const spotLocation = JSON.parse(req.body.spotLocation);
+
+  const image = req.file;
   let metadata;
 
   try {
@@ -22,8 +24,8 @@ const postSpoke = async (req, res, next) => {
   }
 
   const spotCoordinates = {
-    lat: 48.726938,
-    lng: 20.731077
+    lat: spotLocation.lat,
+    lng: spotLocation.lng
   } 
   
 /*   let newSpoke = req.body;
@@ -40,9 +42,12 @@ const postSpoke = async (req, res, next) => {
   }
   
   res.status(200).json({newSpoke}) */
-
-  res.status(200).json({gps: metadata.gps, distance: calculateDistance(metadata.gps, spotCoordinates)});
-
+  if (metadata.gps.GPSLatitude) {
+    const {distance, lat, lng} = calculateDistance(metadata.gps, spotCoordinates);
+    res.status(200).json({gps: metadata.gps, distance, lat, lng});
+  } else {
+    res.status(200).json({gps: "N/A", distance: "N/A"});
+  }
 };
 
 const patchSpoke = async (req, res, next) => {

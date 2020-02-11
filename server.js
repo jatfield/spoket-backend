@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const spokesRoutes = require('./routes/spokes-routes.js');
 const tripsRoutes = require('./routes/trips-routes.js');
 const wheelsRoutes = require('./routes/wheels-routes.js');
+const ridersRoutes = require('./routes/riders-routes.js');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 app.use('/api/spokes', spokesRoutes);
 app.use('/api/trips', tripsRoutes);
 app.use('/api/wheels', wheelsRoutes);
+app.use('/api/riders', ridersRoutes);
 
 
 mongoose.connect(process.env.SPOKET_MONGO_DB_URL, { useNewUrlParser: true })

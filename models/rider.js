@@ -6,7 +6,8 @@ const Schema = mongoose.Schema;
 
 const riderSchema = new Schema ({
   image: {type: String},
-  name: {type: String},
+  nick: {type: String},
+  fbId: {type: String},
   bike: {
     model: {type: String},
     make: {type: String},

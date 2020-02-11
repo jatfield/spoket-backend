@@ -1,6 +1,5 @@
 'use strict';
 
-//Haversine formula
 const calculateDistance = (exifGps, spotCoordinates) => {
 
   const R = 6371071;
@@ -12,13 +11,10 @@ const calculateDistance = (exifGps, spotCoordinates) => {
   const latDiff = (exifDec.lat - spotCoordinates.lat) * (Math.PI/180);
   const lngDiff = (exifDec.lng - spotCoordinates.lng) * (Math.PI/180);
   
-  const d = 2 * R * Math.asin(Math.sqrt(Math.sin(latDiff/2) * Math.sin(latDiff/2) + Math.cos(exifDec.lat * (Math.PI/180)) * Math.cos(spotCoordinates.lat * (Math.PI/180)) * Math.sin(lngDiff/2) * Math.sin(lngDiff/2)));
-  console.log(exifDec);
-  console.log(spotCoordinates);
-  
-  console.log(d);
+  //Haversine formula
+  const distance = 2 * R * Math.asin(Math.sqrt(Math.sin(latDiff/2) * Math.sin(latDiff/2) + Math.cos(exifDec.lat * (Math.PI/180)) * Math.cos(spotCoordinates.lat * (Math.PI/180)) * Math.sin(lngDiff/2) * Math.sin(lngDiff/2)));
 
-  return d;
+  return {distance, lat: exifDec.lat, lng: exifDec.lng};
 };
 
 module.exports = calculateDistance;
