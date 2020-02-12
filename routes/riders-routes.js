@@ -5,6 +5,6 @@ const ridersRoutes = express.Router();
 
 const ridersController = require('../controllers/riders-controller');
 
-ridersRoutes.get('/:fbId', ridersController.getRider);
+ridersRoutes.get('/byfb/:fbId', ridersController.getRiderByFb);
 
 module.exports = ridersRoutes;

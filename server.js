@@ -26,7 +26,6 @@ app.use('/api/trips', tripsRoutes);
 app.use('/api/wheels', wheelsRoutes);
 app.use('/api/riders', ridersRoutes);
 
-
 mongoose.connect(process.env.SPOKET_MONGO_DB_URL, { useNewUrlParser: true })
   .then(()=> {
       console.log('app started');
