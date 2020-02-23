@@ -23,3 +23,7 @@ Content-Type: image/jpg
 
 < ../test.jpg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+###
+POST http://{{host}}/api/trips/application/tId
+Authentication: 'token EAADQKvzHTU0BAGUAWAkYQGY4rptACTagLKFohqnQ8M0MJ77wuo43hPM70eD9TS7HeHZCO1LZCbe5R1ixvPgbWh5aknOx7SSGZB0nxB4CxK5X8QPl7ZCBC8h0qpGP6jXWPlXUFRZBu0Rpnl0zfZCEPZBG5e5KGlupyOPPgH1ijazV19VbDNlfCNlMgkq9y31JJkEfHt1m9R0jAZDZD'

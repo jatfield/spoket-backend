@@ -22,16 +22,19 @@ const spotSchema = new Schema ({
 });
 
 const tripSchema = new Schema ({
-  creator: {rider: {type: mongoose.Types.ObjectId, required: true, ref: 'Rider'}, bike: {model: {type: String}, make: {type: String}, year: {type: Number}}},
+  creator: {
+    rider: {type: mongoose.Types.ObjectId, required: true, ref: 'Rider'}, 
+    bike: {model: {type: String}, make: {type: String}, year: {type: Number}}},
   name: {type: String, required: true},
   description: {type: String, required: true},
   countries: [{type: mongoose.Types.ObjectId, ref: 'Country'}],
   spots: [spotSchema],
-  participation: {type: String, enum: ['open', 'invitation', 'approval'], required: true},
-  riders: [{
+  participation: {type: String, enum: ['open', 'invitational', 'approval'], required: true},
+  participants: [{
     rider: {type: mongoose.Types.ObjectId, ref: 'Rider'},
-    joined: {type: Boolean}, 
+    joined: {type: Boolean},
     completed: {type: Date}}],
+  applicants: [{type: mongoose.Types.ObjectId, ref: 'Rider'}],
   confirmation: {type: String, enum: ['none', 'photo', 'manual'], required: true},
   live: {from: {type: Date, required: true}, till: {type: Date, required: true}},
   ratings: [{rating: {type: Number}, rider: {type: mongoose.Types.ObjectId, ref: 'Rider'}}],

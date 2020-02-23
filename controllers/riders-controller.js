@@ -1,10 +1,27 @@
 'use strict';
 
 const Rider = require('../models/rider');
+const inspectToken = require('../tools/inspect-token')
 
 const getRiderByFb = async (req, res, next) => {
   let rider;
-  const fbId = req.params.fbId
+  let token = req.params.fbToken
+  let fbId = "";
+  let tokenValid = false;
+  try {
+    const tokenData = await inspectToken(token);
+    tokenValid = tokenData.valid;
+    fbId = tokenData.id;
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error validating token');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+
+  if (!tokenValid) {
+    res.status(401);
+  }
 
   try {
     rider = await Rider.findOne({fbId});
@@ -28,7 +45,6 @@ const getRiderByFb = async (req, res, next) => {
     }
   }
   res.status(200).json({rider});
-
 }
 
 exports.getRiderByFb = getRiderByFb;

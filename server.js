@@ -3,6 +3,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const cors = require('cors');
 
 const spokesRoutes = require('./routes/spokes-routes.js');
 const tripsRoutes = require('./routes/trips-routes.js');
@@ -10,6 +11,7 @@ const wheelsRoutes = require('./routes/wheels-routes.js');
 const ridersRoutes = require('./routes/riders-routes.js');
 
 const app = express();
+app.use(cors());
 
 app.use(morgan('combined'));
 app.use(express.json());
