@@ -11,6 +11,11 @@ module.exports = async (req, res, next) => {
     }
     
     req.userData = {valid, id} = await inspectToken(token);
+    
+  if (!req.userData.valid) {
+    res.status(401).json({message: "Invalid token"});
+    return
+  }
     next();
   } catch (error) {
     const errorResponse = new Error('Érvénytelen token.');

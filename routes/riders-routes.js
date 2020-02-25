@@ -9,6 +9,6 @@ const ridersController = require('../controllers/riders-controller');
 ridersRoutes.get('/byfb/:fbToken', ridersController.getRiderByFb);
 
 ridersRoutes.use(checkAuth); //auth token required 
-ridersRoutes.get('/messages/:rId', ridersController.getRiderMessages);
+ridersRoutes.get('/messages/', ridersController.getRiderMessages);
 
 module.exports = ridersRoutes;

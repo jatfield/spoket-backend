@@ -55,7 +55,7 @@ const getRiderMessages = async (req, res, next) => {
   let ridersToApprove = [];
 
   try {
-    rider = await Rider.findById(req.params.rId);
+    rider = await Rider.findOne({fbId: req.userData.id});
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
@@ -64,22 +64,23 @@ const getRiderMessages = async (req, res, next) => {
   }
 
   try {
-    wheelsToApprove = await Wheel.find({trip: rider.tripsCreated, approved: false}).populate('rider')
+    wheelsToApprove = await Wheel.find({trip: rider.tripsCreated, approved: false}).populate('rider').populate({path: 'trip', select: 'name'});
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting wheels');
     errorResponse.errorCode = 500; 
     return next(errorResponse);    
   }
-console.log(wheelsToApprove);
 
-for (let index = 0; index < wheelsToApprove.length; index++) {
-    const riderToApprove = await getFbData(wheelsToApprove[index].rider.fbId);
-    riderToApprove.spoketId = wheelsToApprove[index].rider._id
-    ridersToApprove.push(riderToApprove);
-}
-  res.status(200).json({ridersToApprove});
-};
+  for (let index = 0; index < wheelsToApprove.length; index++) {
+      const riderToApprove = await getFbData(wheelsToApprove[index].rider.fbId);
+      riderToApprove.spoketId = wheelsToApprove[index].rider._id;
+      riderToApprove.wheelId = wheelsToApprove[index]._id;
+      riderToApprove.tripName = wheelsToApprove[index].trip.name;
+      ridersToApprove.push(riderToApprove);
+  }
+    res.status(200).json({ridersToApprove});
+  };
 
 exports.getRiderByFb = getRiderByFb;
 exports.getRiderMessages = getRiderMessages;

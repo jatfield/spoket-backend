@@ -7,7 +7,7 @@
 @createdAt = {{$datetime iso8601}}
 @modifiedBy = {{$processEnv USERNAME}}
 
-GET http://{{host}}/api/trips/first
+GET http://{{host}}/api/trips/
 
 ###
 POST http://{{host}}/api/spokes/
@@ -26,4 +26,9 @@ Content-Type: image/jpg
 
 ###
 POST http://{{host}}/api/trips/application/tId
-Authentication: 'token EAADQKvzHTU0BAGUAWAkYQGY4rptACTagLKFohqnQ8M0MJ77wuo43hPM70eD9TS7HeHZCO1LZCbe5R1ixvPgbWh5aknOx7SSGZB0nxB4CxK5X8QPl7ZCBC8h0qpGP6jXWPlXUFRZBu0Rpnl0zfZCEPZBG5e5KGlupyOPPgH1ijazV19VbDNlfCNlMgkq9y31JJkEfHt1m9R0jAZDZD'
+Authentication: 'token EAADQKvzHTU0BAMZBgKzQD6fQuUU04WDcRZBWrTSvQVQeJZBKZAzVcZCkILTfjKTiuazxMW2vGu68r44HzoRxLUm4ZBionZB6tN3fCzOxA5ogNU8AvLRZCZASZCcANj7OQJ6ZAcUb8WDBMFDiPI8OrLZCfzq6j06KhQCnb3fmFHmsq2CUNsiTUDyDE78PDjdoRsK1K7ZAVwdmt9Y7iTwZDZD'
+
+
+###
+GET http://{{host}}/api/riders/messages/5e458ba2bfc85e039377bc48
+Authentication: 'token EAADQKvzHTU0BAMZBgKzQD6fQuUU04WDcRZBWrTSvQVQeJZBKZAzVcZCkILTfjKTiuazxMW2vGu68r44HzoRxLUm4ZBionZB6tN3fCzOxA5ogNU8AvLRZCZASZCcANj7OQJ6ZAcUb8WDBMFDiPI8OrLZCfzq6j06KhQCnb3fmFHmsq2CUNsiTUDyDE78PDjdoRsK1K7ZAVwdmt9Y7iTwZDZD'
