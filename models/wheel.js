@@ -29,7 +29,8 @@ const wheelSchema = new Schema ({
   trip: {type: mongoose.Types.ObjectId, required: true, ref: 'Trip'},
   spokes: [spokeSchema],
   rating: {type: Number},
-  approved: {type: Boolean, required: true, default: true}
+  approved: {type: Boolean, required: true, default: true},
+  completed: {type: Date}
 }, {timestamps: true});
 
 module.exports = mongoose.model('Wheel', wheelSchema);

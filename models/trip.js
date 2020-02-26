@@ -32,9 +32,8 @@ const tripSchema = new Schema ({
   participation: {type: String, enum: ['open', 'invitational', 'approval'], required: true},
   participants: [{
     rider: {type: mongoose.Types.ObjectId, ref: 'Rider'},
-    joined: {type: Boolean},
+    approved: {type: Boolean},
     completed: {type: Date}}],
-  applicants: [{type: mongoose.Types.ObjectId, ref: 'Rider'}],
   confirmation: {type: String, enum: ['none', 'photo', 'manual'], required: true},
   live: {from: {type: Date, required: true}, till: {type: Date, required: true}},
   ratings: [{rating: {type: Number}, rider: {type: mongoose.Types.ObjectId, ref: 'Rider'}}],

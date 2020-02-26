@@ -20,7 +20,6 @@ const getTrips = async (req, res, next) => {
 }
 
 const applyForTrip = async (req, res, next)  => {
-  if (!req.userData.valid) res.status(401);
 
   let rider, trip;
 
@@ -50,10 +49,12 @@ const applyForTrip = async (req, res, next)  => {
   }
 
   const approved = trip.participation === "open" ? true : false;
-  const wheel = new Wheel({trip: trip._id, rider: rider._id, approved});
+  trip.participants.push({rider, approved})
+  const wheel = new Wheel({trip, rider, approved});
 
   try {
     await wheel.save();
+    await trip.save();
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error saving wheel');
