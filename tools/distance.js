@@ -1,12 +1,8 @@
 'use strict';
 
-const calculateDistance = (exifGps, spotCoordinates) => {
+const calculateDistance = (exifDec, spotCoordinates) => {
 
   const R = 6371071;
-
-  const exifDec = {
-    lat: exifGps.GPSLatitude[0] + exifGps.GPSLatitude[1]/60 + exifGps.GPSLatitude[2]/3600,
-    lng: exifGps.GPSLongitude[0] + exifGps.GPSLongitude[1]/60 + exifGps.GPSLongitude[2]/3600};
   
   const latDiff = (exifDec.lat - spotCoordinates.lat) * (Math.PI/180);
   const lngDiff = (exifDec.lng - spotCoordinates.lng) * (Math.PI/180);
