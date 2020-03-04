@@ -10,7 +10,7 @@ const calculateDistance = (exifDec, spotCoordinates) => {
   //Haversine formula
   const distance = 2 * R * Math.asin(Math.sqrt(Math.sin(latDiff/2) * Math.sin(latDiff/2) + Math.cos(exifDec.lat * (Math.PI/180)) * Math.cos(spotCoordinates.lat * (Math.PI/180)) * Math.sin(lngDiff/2) * Math.sin(lngDiff/2)));
 
-  return {distance, lat: exifDec.lat, lng: exifDec.lng};
+  return distance;
 };
 
 module.exports = calculateDistance;

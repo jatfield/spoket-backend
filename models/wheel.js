@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 
 const spokeSchema = new Schema ({
   image: {
-    path: {type: String},
+    key: {type: String},
     info: {    
       manufacturer: {type: String},
       model: {type: String},
