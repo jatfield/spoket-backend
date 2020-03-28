@@ -7,26 +7,9 @@ const getFbData = require('../tools/get-fb-data');
 
 const getRiderByFb = async (req, res, next) => {
   let rider;
-  let token = req.params.fbToken
-  let fbId = "";
-  let tokenValid = false;
+  
   try {
-    const tokenData = await inspectToken(token);
-    tokenValid = tokenData.valid;
-    fbId = tokenData.id;
-  } catch (error) {
-    console.log(error);
-    const errorResponse = new Error('Error validating token');
-    errorResponse.errorCode = 500; 
-    return next(errorResponse);
-  }
-
-  if (!tokenValid) {
-    res.status(401);
-  }
-
-  try {
-    rider = await Rider.findOne({fbId});
+    rider = await Rider.findOne({fbId: req.userData.id}, '_id');
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
