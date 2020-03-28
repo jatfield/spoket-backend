@@ -2,12 +2,11 @@
 
 const Rider = require('../models/rider');
 const Wheel = require('../models/wheel');
-const inspectToken = require('../tools/inspect-token');
 const getFbData = require('../tools/get-fb-data');
 
 const getRiderByFb = async (req, res, next) => {
   let rider;
-  
+
   try {
     rider = await Rider.findOne({fbId: req.userData.id}, '_id');
   } catch (error) {
@@ -62,8 +61,8 @@ const getRiderMessages = async (req, res, next) => {
       riderToApprove.tripName = wheelsToApprove[index].trip.name;
       ridersToApprove.push(riderToApprove);
   }
-    res.status(200).json({ridersToApprove});
-  };
+  res.status(200).json({ridersToApprove});
+};
 
 exports.getRiderByFb = getRiderByFb;
 exports.getRiderMessages = getRiderMessages;

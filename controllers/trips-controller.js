@@ -62,7 +62,7 @@ const applyForTrip = async (req, res, next)  => {
     return next(errorResponse);
   }
 
-  res.status(200).json({wheel})
+  res.status(200).json({approved})
 }
 
 exports.getTrips = getTrips;
