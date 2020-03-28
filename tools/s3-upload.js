@@ -23,6 +23,6 @@ const s3Upload = async (key, buffer, mimetype) => {
       }
   })
 
-}
+};
 
 module.exports = s3Upload;

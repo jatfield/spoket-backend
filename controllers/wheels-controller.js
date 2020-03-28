@@ -25,7 +25,7 @@ const getWheelsByRider = async (req, res, next) => {
   let wheel;
 
   try {
-    wheel = await Wheel.findOne({rider: rId}).populate("trip");    
+    wheel = await Wheel.findOne({rider: rId, approved: true}).populate("trip");    
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting wheel');

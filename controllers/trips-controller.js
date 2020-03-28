@@ -8,7 +8,7 @@ const getTrips = async (req, res, next) => {
   let trips;
 
   try {
-    trips = await Trip.find();
+    trips = await Trip.find().select('-spots.riders -spots.name -spots.description -spots.ratings -spots.rating -spots.image -spots.reward -spots.flagged');
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting trips');
@@ -17,7 +17,7 @@ const getTrips = async (req, res, next) => {
   }
 
   res.status(200).json({trips});
-}
+};
 
 const applyForTrip = async (req, res, next)  => {
 

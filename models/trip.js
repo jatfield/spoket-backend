@@ -28,6 +28,10 @@ const tripSchema = new Schema ({
   name: {type: String, required: true},
   description: {type: String, required: true},
   countries: [{type: mongoose.Types.ObjectId, ref: 'Country'}],
+  origin: {    
+    lat:  {type: Number, required: true},
+    lng:  {type: Number, required: true}
+  },
   spots: [spotSchema],
   participation: {type: String, enum: ['open', 'invitational', 'approval'], required: true},
   participants: [{
