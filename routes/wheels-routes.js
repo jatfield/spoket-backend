@@ -9,6 +9,8 @@ const wheelsController = require('../controllers/wheels-controller');
 wheelsRoutes.get('/:wId', wheelsController.getWheel);
 wheelsRoutes.get('/rider/:rId', wheelsController.getWheelsByRider);
 wheelsRoutes.use(checkAuth); //auth token required 
+wheelsRoutes.get('/rider/:rId', wheelsController.getWheelsByRider);
+wheelsRoutes.post('/create/:tId', wheelsController.postWheel);
 wheelsRoutes.post('/approval', wheelsController.approveWheels);
 
 module.exports = wheelsRoutes;

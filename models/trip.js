@@ -15,7 +15,7 @@ const spotSchema = new Schema ({
   },
   riders: [{
     rider: {type: mongoose.Types.ObjectId, ref: 'Rider'},
-    completed: {type: Date}}],
+    completedAt: {type: Date}}],
   ratings: [{rating: {type: Number}, rider: {type: mongoose.Types.ObjectId, ref: 'Rider'}}],
   rating: {type: Number},
   flagged: [{rider: {type: mongoose.Types.ObjectId, ref: 'Rider'}, time: {type: Date}}]
@@ -36,8 +36,7 @@ const tripSchema = new Schema ({
   participation: {type: String, enum: ['open', 'invitational', 'approval'], required: true},
   participants: [{
     rider: {type: mongoose.Types.ObjectId, ref: 'Rider'},
-    approved: {type: Boolean},
-    completed: {type: Date}}],
+    completedAt: {type: Date}}],
   confirmation: {type: String, enum: ['none', 'photo', 'manual'], required: true},
   live: {from: {type: Date, required: true}, till: {type: Date, required: true}},
   ratings: [{rating: {type: Number}, rider: {type: mongoose.Types.ObjectId, ref: 'Rider'}}],

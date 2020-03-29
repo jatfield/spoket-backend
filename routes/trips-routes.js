@@ -8,7 +8,4 @@ const tripsController = require('../controllers/trips-controller');
 
 tripsRoutes.get('/', tripsController.getTrips);
 
-tripsRoutes.use(checkAuth); //auth token required 
-tripsRoutes.post('/application/:tId', tripsController.applyForTrip);
-
 module.exports = tripsRoutes;

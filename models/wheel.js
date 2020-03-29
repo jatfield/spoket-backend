@@ -15,7 +15,7 @@ const spokeSchema = new Schema ({
       lng:  {type: Number}
     }
   },
-  verified: {type: Date},
+  verifiedAt: {type: Date},
   location: {    
     lat:  {type: Number, required: true},
     lng:  {type: Number, required: true}
@@ -30,7 +30,7 @@ const wheelSchema = new Schema ({
   spokes: [spokeSchema],
   rating: {type: Number},
   approved: {type: Boolean, required: true, default: true},
-  completed: {type: Date}
+  completedAt: {type: Date}
 }, {timestamps: true});
 
 module.exports = mongoose.model('Wheel', wheelSchema);

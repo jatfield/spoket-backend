@@ -36,51 +36,95 @@ const getWheelsByRider = async (req, res, next) => {
   res.status(200).json({wheel});
 };
 
-const approveWheels = async (req, res, next) => {
-  let rider, wheels;
+const postWheel = async (req, res, next)  => {
+
+  let rider, trip;
 
   try {
-    rider = await Rider.findOne({fbId: req.userData.id})
+    rider = await Rider.findOne({fbId: req.userData.id});
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+
+  if (!rider) {
+    console.log(error);
+    const errorResponse = new Error('No such rider');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+
+  try {
+    trip = await Trip.findById(req.params.tId)
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error getting trip');
     errorResponse.errorCode = 500; 
     return next(errorResponse);    
   }
 
+  const approved = trip.participation === "open" ? true : false;
+  const wheel = new Wheel({trip, rider, approved});
+
   try {
-    wheels = await Wheel.find({_id: req.body.approved})
+    await wheel.save();
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error saving wheel');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+
+  res.status(200).json({approved})
+}
+
+const approveWheels = async (req, res, next) => {
+  let tripOwner, wheels;
+
+  try {
+    tripOwner = await Rider.findOne({fbId: req.userData.id});
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
-    errorResponse.errorCode = 500; 
-    return next(errorResponse);    
+    errorResponse.errorCode = 500;
+    return next(errorResponse);
+  }
+
+  try {
+    wheels = await Wheel.find({_id: req.body.approved});
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error getting wheels');
+    errorResponse.errorCode = 500;
+    return next(errorResponse);
   }
 
   try {
     for (let index = 0; index < wheels.length; index++) {
       let wheel = wheels[index];
       let trip = await Trip.findById(wheel.trip, 'participants');
-      let rider = await Rider.findById(wheel.rider, 'tripsActive');      
+      let rider = await Rider.findById(wheel.rider, 'tripsActive');
       
       wheel.approved = true;
-      trip.participants.find((p) => String(p.rider) === String(rider._id)).approved = true;
+      trip.participants.push({rider});
       rider.tripsActive.push(trip);
       await wheel.save();
       await trip.save();
       await rider.save();
     }
-    
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error updating wheels');
-    errorResponse.errorCode = 500; 
-    return next(errorResponse); 
+    errorResponse.errorCode = 500;
+    return next(errorResponse);
   }
 
   res.status(200).json({message: "success"});
 };
 
 exports.getWheel = getWheel;
+exports.postWheel = postWheel;
 exports.getWheelsByRider = getWheelsByRider;
 exports.approveWheels = approveWheels;
