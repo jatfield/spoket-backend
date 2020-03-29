@@ -66,10 +66,12 @@ const postWheel = async (req, res, next)  => {
   }
 
   const approved = trip.participation === "open" ? true : false;
+  trip.participants.push({rider, approved});
   const wheel = new Wheel({trip, rider, approved});
 
   try {
     await wheel.save();
+    await trip.save();
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error saving wheel');
@@ -81,7 +83,7 @@ const postWheel = async (req, res, next)  => {
 }
 
 const approveWheels = async (req, res, next) => {
-  let tripOwner, wheels;
+  let tripOwner, approvedWheels;
 
   try {
     tripOwner = await Rider.findOne({fbId: req.userData.id});
@@ -93,7 +95,7 @@ const approveWheels = async (req, res, next) => {
   }
 
   try {
-    wheels = await Wheel.find({_id: req.body.approved});
+    approvedWheels = await Wheel.find({_id: req.body.approved});
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting wheels');
@@ -102,18 +104,20 @@ const approveWheels = async (req, res, next) => {
   }
 
   try {
-    for (let index = 0; index < wheels.length; index++) {
-      let wheel = wheels[index];
-      let trip = await Trip.findById(wheel.trip, 'participants');
+    for (let index = 0; index < approvedWheels.length; index++) {
+      let wheel = approvedWheels[index];
+      let trip = await Trip.findOne({_id: wheel.trip, creator: {rider: tripOwner._id}}, 'participants');
       let rider = await Rider.findById(wheel.rider, 'tripsActive');
       
       wheel.approved = true;
-      trip.participants.push({rider});
+      trip.participants.find((p) => String(p.rider) === String(rider._id)).approved = true;
       rider.tripsActive.push(trip);
       await wheel.save();
       await trip.save();
       await rider.save();
     }
+    await Wheel.updateMany({_id: req.body.decided},{decidedAt: Date.now()})
+
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error updating wheels');

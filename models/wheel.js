@@ -30,6 +30,7 @@ const wheelSchema = new Schema ({
   spokes: [spokeSchema],
   rating: {type: Number},
   approved: {type: Boolean, required: true, default: true},
+  decidedAt: {type: Date},
   completedAt: {type: Date}
 }, {timestamps: true});
 

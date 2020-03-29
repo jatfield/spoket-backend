@@ -46,12 +46,12 @@ const getRiderMessages = async (req, res, next) => {
   }
 
   try {
-    wheelsToApprove = await Wheel.find({trip: rider.tripsCreated, approved: false}).populate('rider').populate({path: 'trip', select: 'name'});
+    wheelsToApprove = await Wheel.find({trip: rider.tripsCreated, approved: false, decidedAt: null}).populate('rider').populate({path: 'trip', select: 'name'});
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting wheels');
-    errorResponse.errorCode = 500; 
-    return next(errorResponse);    
+    errorResponse.errorCode = 500;
+    return next(errorResponse);  
   }
 
   for (let index = 0; index < wheelsToApprove.length; index++) {
