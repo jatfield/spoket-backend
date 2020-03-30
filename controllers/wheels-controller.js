@@ -21,19 +21,29 @@ const getWheel = async (req, res, next) => {
 };
 
 const getWheelsByRider = async (req, res, next) => {
-  const rId = req.params.rId;
-  let wheel;
+  let rider, wheels;
 
   try {
-    wheel = await Wheel.findOne({rider: rId, approved: true}).populate("trip");    
+    rider = await Rider.findOne({fbId: req.userData.id});
+    console.log('rider:', rider);
   } catch (error) {
     console.log(error);
-    const errorResponse = new Error('Error getting wheel');
+    const errorResponse = new Error('Error getting rider');
     errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
 
-  res.status(200).json({wheel});
+  try {
+    
+    wheels = await Wheel.find({rider: rider._id, approved: true}).populate("trip");    
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error getting wheel');
+    errorResponse.errorCode = 500;
+    return next(errorResponse);
+  }
+
+  res.status(200).json({wheels});
 };
 
 const postWheel = async (req, res, next)  => {
