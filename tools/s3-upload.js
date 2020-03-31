@@ -25,4 +25,19 @@ const s3Upload = async (key, buffer, mimetype) => {
 
 };
 
-module.exports = s3Upload;
+const s3GetUrl = async (key) => {
+  return new Promise(async (resolve, reject) => {
+    const s3 = new AWS.S3({signatureVersion: 'v4'});
+    const s3Params = { 
+      Bucket: process.env.SPOKET_S3_BUCKET,
+      Key: key} //default
+      try {
+        let url = s3.getSignedUrl('getObject', {Bucket: s3Params.Bucket, Key: s3Params.Key});
+        resolve(url)
+      } catch (error) {
+        reject(error)
+      }
+  })
+}
+
+module.exports = {s3Upload, s3GetUrl};

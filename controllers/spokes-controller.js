@@ -3,14 +3,7 @@
 const mongoose = require('mongoose');
 const Wheel = require('../models/wheel');
 const Jimp = require('jimp');
-const s3Upload = require('../tools/s3-upload')
-
-const AWS = require('aws-sdk');
-AWS.config.update({
-  accessKeyId: process.env.SPOKET_AWSAccessKeyId,
-  secretAccessKey: process.env.SPOKET_AWSSecretKey,
-  region: 'eu-central-1'
-});
+const {s3Upload, s3GetUrl} = require('../tools/s3-upload')
 
 const extractExif = require('../tools/extract-exif');
 const calculateDistance = require('../tools/distance');
@@ -24,14 +17,13 @@ const postSpoke = async (req, res, next) => {
   const image = req.file;
   let resizedImage;
   let metadata;
-  let wheel;
-  let spoke = {}
+  let wheel, spoke;
   let url, resizedUrl;
   const spot = JSON.parse(req.body.spot);
 
   try {
     wheel = await Wheel.findById(spot.wheel).populate({path: 'trip', select: 'confirmation'});
-    spoke = wheel.spokes.find((spoke) => toString(spoke.spot) === toString(spot._id)) || {_id: new mongoose.Types.ObjectId(), image:{}, spot: spot._id};
+    spoke = wheel.spokes.find(spoke => spoke.spot.equals(spot._id)) || wheel.spokes.create({image:{}, spot: mongoose.Types.ObjectId(spot._id)});    
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error loading wheel');
@@ -41,28 +33,18 @@ const postSpoke = async (req, res, next) => {
 
   //if image
 
-  // Jimp.read(image.buffer)
-  //   .then(async (image) => {
-  //     image.resize(Jimp.AUTO, 1200);
-  //     resizedImage = await image.getBufferAsync(Jimp.AUTO);
-  //     console.log(resizedImage);
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //     const errorResponse = new Error('Error resizing image');
-  //     errorResponse.errorCode = 500; 
-  //     return next(errorResponse);
-  //   });
-
-    let jImage
-    try {
-      jImage = await Jimp.read(image.buffer);
-      jImage.resize(Jimp.AUTO, 1080);
-      jImage.quality(90);
-      resizedImage = await jImage.getBufferAsync(Jimp.AUTO);
-    } catch (error) {
-      
-    }
+  let jImage
+  try {
+    jImage = await Jimp.read(image.buffer);
+    jImage.resize(Jimp.AUTO, 1080);
+    jImage.quality(90);
+    resizedImage = await jImage.getBufferAsync(Jimp.AUTO);
+  } catch (error) {
+      console.log(error);
+      const errorResponse = new Error('Error resizing image');
+      errorResponse.errorCode = 500; 
+      return next(errorResponse);
+  }
 
   try {
     metadata = await extractExif(image.buffer);
@@ -107,22 +89,20 @@ const postSpoke = async (req, res, next) => {
     return next(errorResponse);
   }
 
-  //end if image 
-  
+  // //end if image 
+
   try {
-    const spokeVerified = (wheel.trip.confirmation === 'none' || (wheel.trip.confirmation === 'photo' && distance < 150)) ? new Date() : null;
-    const spokeLocation = spokeVerified ? spot.location : exifDec;
+    const spokeVerifiedAt = (wheel.trip.confirmation === 'none' || (wheel.trip.confirmation === 'photo' && distance < 150)) ? new Date() : null;
+    const spokeLocation = spokeVerifiedAt ? spot.location : exifDec;
     spoke.image.info = {
                 make: metadata.image.Make,
                 model: metadata.image.Model,
                 taken: imageDate,
                 lat: exifDec.lat,
                 lng: exifDec.lng};
-    spoke.verified = spokeVerified;
+    spoke.verifiedAt = spokeVerifiedAt;
     spoke.location = spokeLocation;
-    if (wheel.spokes.id(spoke._id)) {
-      wheel.spokes.id(spoke._id).set(spoke);
-    } else {
+    if (spoke.isNew) {
       wheel.spokes.push(spoke);
     }
     await wheel.save();
@@ -132,7 +112,7 @@ const postSpoke = async (req, res, next) => {
     errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
-  
+
   if (metadata.gps.GPSLatitude) {
     res.status(200).json({gps: metadata.gps, distance, spoke, resizedUrl});
   } else {
@@ -144,4 +124,30 @@ const patchSpoke = async (req, res, next) => {
   //check tripadmin
 };
 
+const getSpokeUrl = async (req, res, next) => {
+  let wheel, spoke, url;
+  try {
+    wheel = await Wheel.findById(req.params.wId);
+    spoke = wheel.spokes.find((s) => s.spot.equals(req.params.sId));
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error loading wheel');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+if (spoke) {
+  try {
+    url = await s3GetUrl(spoke.image.key)
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error getting spoke image url');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+}
+  res.status(200).json({url});
+
+};
+
 exports.postSpoke = postSpoke;
+exports.getSpokeUrl = getSpokeUrl;

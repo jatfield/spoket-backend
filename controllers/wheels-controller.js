@@ -25,7 +25,6 @@ const getWheelsByRider = async (req, res, next) => {
 
   try {
     rider = await Rider.findOne({fbId: req.userData.id});
-    console.log('rider:', rider);
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
