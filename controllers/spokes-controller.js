@@ -65,7 +65,6 @@ const postSpoke = async (req, res, next) => {
     lng: metadata.gps.GPSLongitude[0] + metadata.gps.GPSLongitude[1]/60 + metadata.gps.GPSLongitude[2]/3600
   };
 
-  const distance = calculateDistance(exifDec, spotCoordinates);
   let imageDate = null
   if (metadata.exif.DateTimeOriginal) {
     let date = metadata.exif.DateTimeOriginal.split(" ");
@@ -92,7 +91,8 @@ const postSpoke = async (req, res, next) => {
   // //end if image 
 
   try {
-    const spokeVerifiedAt = (wheel.trip.confirmation === 'none' || (wheel.trip.confirmation === 'photo' && distance < 150)) ? new Date() : null;
+    spoke.distance = calculateDistance(exifDec, spotCoordinates);
+    const spokeVerifiedAt = (wheel.trip.confirmation === 'none' || (wheel.trip.confirmation === 'photo' && spoke.distance < 150)) ? new Date() : null;
     const spokeLocation = spokeVerifiedAt ? spot.location : exifDec;
     spoke.image.info = {
                 make: metadata.image.Make,
@@ -114,9 +114,9 @@ const postSpoke = async (req, res, next) => {
   }
 
   if (metadata.gps.GPSLatitude) {
-    res.status(200).json({gps: metadata.gps, distance, spoke, resizedUrl});
+    res.status(200).json({gps: metadata.gps, spoke, resizedUrl});
   } else {
-    res.status(200).json({gps: "N/A", distance: "N/A", spoke, resizedUrl});
+    res.status(200).json({gps: "N/A", spoke, resizedUrl});
   }
 };
 
@@ -128,7 +128,7 @@ const getSpokeUrl = async (req, res, next) => {
   let wheel, spoke, url;
   try {
     wheel = await Wheel.findById(req.params.wId);
-    spoke = wheel.spokes.find((s) => s.spot.equals(req.params.sId));
+    spoke = wheel.spokes.id(req.params.sId);
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error loading wheel');

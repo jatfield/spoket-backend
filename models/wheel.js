@@ -22,6 +22,7 @@ const spokeSchema = new Schema ({
   },
   rating: {type: Number},
   spot: {type: mongoose.Types.ObjectId, required: true, ref: 'Spot'},
+  distance:  {type: Number}
 }, {timestamps: true});
 
 const wheelSchema = new Schema ({
