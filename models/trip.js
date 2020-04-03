@@ -13,9 +13,6 @@ const spotSchema = new Schema ({
     lat:  {type: Number, required: true},
     lng:  {type: Number, required: true}
   },
-  riders: [{
-    rider: {type: mongoose.Types.ObjectId, ref: 'Rider'},
-    completedAt: {type: Date}}],
   ratings: [{rating: {type: Number}, rider: {type: mongoose.Types.ObjectId, ref: 'Rider'}}],
   rating: {type: Number},
   flagged: [{rider: {type: mongoose.Types.ObjectId, ref: 'Rider'}, time: {type: Date}}]
