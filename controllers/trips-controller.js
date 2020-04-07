@@ -20,8 +20,8 @@ const getTrips = async (req, res, next) => {
   res.status(200).json({trips});
 };
 
-const getTripForOwner = async (req, res, next) => {
-  let creator, trip, wheels;
+const getTripForCreator = async (req, res, next) => {
+  let creator, trip;
   let ridersFinished = [];
 
   try {
@@ -34,8 +34,7 @@ const getTripForOwner = async (req, res, next) => {
   }
 
   try {
-    trip = await Trip.findOne({'creator.rider': creator._id, _id: req.params.tId}).select('participants').populate('participants.rider');
-    wheels = await Wheel.find({trip: trip._id, approved: true}).select('rider spokes.verifiedAt');       
+    trip = await Trip.findOne({'creator.rider': creator._id, _id: req.params.tId}).select('participants').populate('participants.rider');    
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting trip');
@@ -52,6 +51,40 @@ const getTripForOwner = async (req, res, next) => {
   }
 
   res.status(200).json({trip, ridersFinished});
+};
+
+
+const getTripParticipants = async (req, res, next) => {
+  let creator, trip, completers, participants, applicants;
+  let ridersFinished = [];
+
+  try {
+    creator = await Rider.findOne({fbId: req.userData.id});
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error getting rider');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+
+  try {
+    trip = await Trip.findOne({'creator.rider': creator._id, _id: req.params.tId}).select('participants').populate('participants.rider');
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error getting trip');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+
+  for (let index = 0; index < trip.participants.length; index++) {
+    let rider = {};
+    if (trip.participants[index].completedAt) {
+      rider.fbData = await getFbData(trip.participants[index].rider.fbId);
+      ridersFinished.push(rider);
+    }
+  }
+
+  res.status(200).json({trip, ridersFinished, wheelsToApprove});
 };
 
 const getTripRole = async (req, res, next) => {
@@ -83,4 +116,4 @@ const getTripRole = async (req, res, next) => {
 
 exports.getTrips = getTrips;
 exports.getTripRole = getTripRole;
-exports.getTripForOwner = getTripForOwner;
+exports.getTripForCreator = getTripForCreator;

@@ -17,7 +17,7 @@ const getRiderByFb = async (req, res, next) => {
   }
 
   if (!rider) {
-    let newRider = new Rider({fbId});
+    let newRider = new Rider({fbId: req.userData.id});
     try {
       await newRider.save();
       rider = newRider;
@@ -46,7 +46,7 @@ const getRiderMessages = async (req, res, next) => {
   }
 
   try {
-    wheelsToApprove = await Wheel.find({trip: rider.tripsCreated, approved: false, decidedAt: null}).populate('rider').populate({path: 'trip', select: 'name'});
+    wheelsToApprove = await Wheel.find({trip: rider.tripsCreated, approvedAt: null}).populate('rider').populate({path: 'trip', select: 'name'});
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting wheels');

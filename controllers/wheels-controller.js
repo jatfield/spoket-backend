@@ -33,7 +33,7 @@ const getWheelsByRider = async (req, res, next) => {
   }
 
   try {
-    wheels = await Wheel.find({rider: rider._id, approved: true}).populate("trip");   
+    wheels = await Wheel.find({rider: rider._id, approvedAt: { $ne: null }}).populate("trip");   
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting wheel');
@@ -75,7 +75,7 @@ const postWheel = async (req, res, next)  => {
 
   const approved = trip.participation === "open" ? true : false;
   trip.participants.push({rider, approved});
-  const wheel = new Wheel({trip, rider, approved});
+  const wheel = new Wheel({trip, rider, approvedAt: approved ? Date.now : null});
 
   try {
     await wheel.save();
