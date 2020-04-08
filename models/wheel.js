@@ -30,7 +30,7 @@ const wheelSchema = new Schema ({
   trip: {type: mongoose.Types.ObjectId, required: true, ref: 'Trip'},
   spokes: [spokeSchema],
   rating: {type: Number},
-  approvedAt: {type: Date, required: true, default: Date.now},
+  approvedAt: {type: Date, default: null},
   completedAt: {type: Date}
 }, {timestamps: true});
 

@@ -10,5 +10,6 @@ tripsRoutes.get('/', tripsController.getTrips);
 tripsRoutes.use(checkAuth); //auth token required 
 tripsRoutes.get('/:tId/role', tripsController.getTripRole);
 tripsRoutes.get('/:tId/creatordata', tripsController.getTripForCreator);
+tripsRoutes.get('/:tId/participants', tripsController.getTripParticipants);
 
 module.exports = tripsRoutes;

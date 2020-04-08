@@ -33,7 +33,9 @@ const getWheelsByRider = async (req, res, next) => {
   }
 
   try {
-    wheels = await Wheel.find({rider: rider._id, approvedAt: { $ne: null }}).populate("trip");   
+    wheels = await Wheel.find({rider: rider._id, approvedAt: { $ne: null }}).populate('trip', 'spots origin description name');
+    console.log(wheels);
+       
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting wheel');
@@ -58,7 +60,6 @@ const postWheel = async (req, res, next)  => {
   }
 
   if (!rider) {
-    console.log(error);
     const errorResponse = new Error('No such rider');
     errorResponse.errorCode = 500; 
     return next(errorResponse);
@@ -74,8 +75,9 @@ const postWheel = async (req, res, next)  => {
   }
 
   const approved = trip.participation === "open" ? true : false;
-  trip.participants.push({rider, approved});
-  const wheel = new Wheel({trip, rider, approvedAt: approved ? Date.now : null});
+  const wheel = new Wheel({trip, rider});
+  if (approved) wheel.approvedAt = Date.now;
+  trip.wheels.push(wheel);
 
   try {
     await wheel.save();
