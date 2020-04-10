@@ -33,7 +33,17 @@ const postSpoke = async (req, res, next) => {
 
   //if image
 
-  let jImage
+  try {
+    metadata = await extractExif(image.buffer);
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error extracting exif');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+
+  let jImage, rotateDeg = 0;
+
   try {
     jImage = await Jimp.read(image.buffer);
     jImage.resize(Jimp.AUTO, 1080);
@@ -44,15 +54,6 @@ const postSpoke = async (req, res, next) => {
       const errorResponse = new Error('Error resizing image');
       errorResponse.errorCode = 500; 
       return next(errorResponse);
-  }
-
-  try {
-    metadata = await extractExif(image.buffer);
-  } catch (error) {
-    console.log(error);
-    const errorResponse = new Error('Error extracting exif');
-    errorResponse.errorCode = 500; 
-    return next(errorResponse);
   }
 
   const spotCoordinates = {

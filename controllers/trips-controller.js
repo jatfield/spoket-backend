@@ -40,6 +40,7 @@ const getTripParticipants = async (req, res, next) => {
       
       const rider = await Rider.findById(trip.wheels[index].rider).lean();
       rider.fbData = await getFbData(rider.fbId);
+      rider.wheel = trip.wheels[index];
       
       if (!trip.wheels[index].approvedAt) {
         applicants.push(rider);

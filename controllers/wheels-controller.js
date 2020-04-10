@@ -91,7 +91,7 @@ const postWheel = async (req, res, next)  => {
 }
 
 const approveWheels = async (req, res, next) => {
-  let tripOwner, approvedWheels;
+  let tripOwner, trip, approvedWheels;
 
   try {
     tripOwner = await Rider.findById(req.userData.spoketId);
@@ -103,7 +103,8 @@ const approveWheels = async (req, res, next) => {
   }
 
   try {
-    approvedWheels = await Wheel.find({_id: req.body.approved});
+    trip = await Trip.findOne({_id: req.body.trip, creator: {rider: tripOwner._id}});
+    approvedWheels = await Wheel.find({_id: req.body.approved, trip: trip._id});
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting wheels');
@@ -114,13 +115,8 @@ const approveWheels = async (req, res, next) => {
   try {
     for (let index = 0; index < approvedWheels.length; index++) {
       let wheel = approvedWheels[index];
-      let trip = await Trip.findOne({_id: wheel.trip, creator: {rider: tripOwner._id}}, 'participants');
-      let rider = await Rider.findById(wheel.rider, 'tripsActive');
-      
-      wheel.approved = true;
-      trip.participants.find((p) => String(p.rider) === String(rider._id)).approved = true;
+      wheel.approvedAt = Date.now();
       await wheel.save();
-      await trip.save();
     }
     await Wheel.updateMany({_id: req.body.decided},{decidedAt: Date.now()})
 
