@@ -10,7 +10,8 @@ module.exports = async (req, res, next) => {
       const errorResponse = new Error('Missing token.');
       errorResponse.errorCode = 401; 
       return next(errorResponse);
-    }    
+    }
+    //TODO: only for innocent gets 
     !spoketId ? req.userData = {valid, id} = await inspectToken(token) : req.userData = {valid: true, spoketId};
     
   if (!req.userData.valid) {

@@ -9,7 +9,7 @@ const getTrips = async (req, res, next) => {
   let trips;
 
   try {
-    trips = await Trip.find().select('-wheels -spots.name -spots.description -spots.ratings -spots.image -spots.reward -spots.flagged');
+    trips = await Trip.find().select('-spots.name -spots.description -spots.ratings -spots.image -spots.reward -spots.flagged').populate('wheels', 'approvedAt completedAt');
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting trips');
@@ -19,32 +19,6 @@ const getTrips = async (req, res, next) => {
 
   res.status(200).json({trips});
 };
-
-const getTripForCreator = async (req, res, next) => {
-  let creator, trip;
-  let ridersFinished = [];
-
-  try {
-    creator = await Rider.findById(req.userData.spoketId);
-  } catch (error) {
-    console.log(error);
-    const errorResponse = new Error('Error getting rider');
-    errorResponse.errorCode = 500; 
-    return next(errorResponse);
-  }
-
-  try {
-    trip = await Trip.findOne({'creator.rider': creator._id, _id: req.params.tId}, 'wheels').populate('wheels','approvedAt');
-  } catch (error) {
-    console.log(error);
-    const errorResponse = new Error('Error getting trip');
-    errorResponse.errorCode = 500; 
-    return next(errorResponse);
-  }
-
-  res.status(200).json({trip});
-};
-
 
 const getTripParticipants = async (req, res, next) => {
   let creator, trip, riders;
@@ -84,15 +58,13 @@ const getTripParticipants = async (req, res, next) => {
     return next(errorResponse);
   }
 
-  res.status(200).json({trip, riders});
+  res.status(200).json({riders});
 };
 
 const getTripRole = async (req, res, next) => {
   let rider, trip, role;
 
   try {
-    console.log(req.userData.spoketId);
-    
     rider = await Rider.findById(req.userData.spoketId);
   } catch (error) {
     console.log(error);
@@ -117,5 +89,4 @@ const getTripRole = async (req, res, next) => {
 
 exports.getTrips = getTrips;
 exports.getTripRole = getTripRole;
-exports.getTripForCreator = getTripForCreator;
 exports.getTripParticipants = getTripParticipants;

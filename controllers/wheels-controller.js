@@ -24,9 +24,7 @@ const getWheelsByRider = async (req, res, next) => {
   let rider, wheels;
 
   try {
-    rider = await Rider.findById(req.userData.spoketId);
-    console.log(rider);
-    
+    rider = await Rider.findById(req.userData.spoketId);    
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
@@ -121,10 +119,8 @@ const approveWheels = async (req, res, next) => {
       
       wheel.approved = true;
       trip.participants.find((p) => String(p.rider) === String(rider._id)).approved = true;
-      rider.tripsActive.push(trip);
       await wheel.save();
       await trip.save();
-      await rider.save();
     }
     await Wheel.updateMany({_id: req.body.decided},{decidedAt: Date.now()})
 

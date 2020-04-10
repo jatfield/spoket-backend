@@ -11,10 +11,7 @@ const riderSchema = new Schema ({
   bike: {
     model: {type: String},
     make: {type: String},
-    year: {type: Number}},
-  tripsActive: [{type: mongoose.Types.ObjectId, ref: 'Trip'}],
-  tripsTaken: [{type: mongoose.Types.ObjectId, ref: 'Trip'}],
-  tripsCreated: [{type: mongoose.Types.ObjectId, ref: 'Trip'}]
+    year: {type: Number}}
 });
 
 
