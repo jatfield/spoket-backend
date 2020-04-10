@@ -25,7 +25,7 @@ const getTripForCreator = async (req, res, next) => {
   let ridersFinished = [];
 
   try {
-    creator = await Rider.findOne({fbId: req.userData.id});
+    creator = await Rider.findById(req.userData.spoketId);
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
@@ -50,7 +50,7 @@ const getTripParticipants = async (req, res, next) => {
   let creator, trip, riders;
 
   try {
-    creator = await Rider.findOne({fbId: req.userData.id});
+    creator = await Rider.findById(req.userData.spoketId);
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
@@ -91,7 +91,9 @@ const getTripRole = async (req, res, next) => {
   let rider, trip, role;
 
   try {
-    rider = await Rider.findOne({fbId: req.userData.id});
+    console.log(req.userData.spoketId);
+    
+    rider = await Rider.findById(req.userData.spoketId);
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');

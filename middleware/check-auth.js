@@ -2,15 +2,16 @@ const inspectToken = require('../tools/inspect-token')
 
 module.exports = async (req, res, next) => {
   try {
-    const token = req.headers.authentication.split(' ')[1];
+    const authHeader = req.headers.authentication.split(' ');    
+    const token = authHeader[1];
+    const spoketId = authHeader[3];
     
     if (!token) {
       const errorResponse = new Error('Missing token.');
       errorResponse.errorCode = 401; 
       return next(errorResponse);
-    }
-    
-    req.userData = {valid, id} = await inspectToken(token);
+    }    
+    !spoketId ? req.userData = {valid, id} = await inspectToken(token) : req.userData = {valid: true, spoketId};
     
   if (!req.userData.valid) {
     res.status(401).json({message: "Invalid token"});

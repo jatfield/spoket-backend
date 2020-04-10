@@ -37,7 +37,7 @@ const getRiderMessages = async (req, res, next) => {
   let ridersToApprove = [];
 
   try {
-    rider = await Rider.findOne({fbId: req.userData.id});
+    rider = await Rider.findById(req.userData.spoketId);
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');

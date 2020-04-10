@@ -24,7 +24,9 @@ const getWheelsByRider = async (req, res, next) => {
   let rider, wheels;
 
   try {
-    rider = await Rider.findOne({fbId: req.userData.id});
+    rider = await Rider.findById(req.userData.spoketId);
+    console.log(rider);
+    
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
@@ -33,9 +35,7 @@ const getWheelsByRider = async (req, res, next) => {
   }
 
   try {
-    wheels = await Wheel.find({rider: rider._id, approvedAt: { $ne: null }}).populate('trip', 'spots origin description name');
-    console.log(wheels);
-       
+    wheels = await Wheel.find({rider: rider._id, approvedAt: { $ne: null }}).populate('trip', 'spots origin description name');       
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting wheel');
@@ -51,7 +51,7 @@ const postWheel = async (req, res, next)  => {
   let rider, trip;
 
   try {
-    rider = await Rider.findOne({fbId: req.userData.id});
+    rider = await Rider.findById(req.userData.spoketId);
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
@@ -96,7 +96,7 @@ const approveWheels = async (req, res, next) => {
   let tripOwner, approvedWheels;
 
   try {
-    tripOwner = await Rider.findOne({fbId: req.userData.id});
+    tripOwner = await Rider.findById(req.userData.spoketId);
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
