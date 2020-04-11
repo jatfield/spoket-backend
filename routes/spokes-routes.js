@@ -3,7 +3,7 @@
 const express = require('express');
 const spokesRoutes = express.Router();
 
-const checkAuth = require('../middleware/check-auth');
+const {checkAuth} = require('../middleware/check-auth');
 const fileUpload = require('../middleware/file-upload');
 const spokesController = require('../controllers/spokes-controller');
 

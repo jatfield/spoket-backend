@@ -42,7 +42,7 @@ const postSpoke = async (req, res, next) => {
     return next(errorResponse);
   }
 
-  let jImage, rotateDeg = 0;
+  let jImage;
 
   try {
     jImage = await Jimp.read(image.buffer);

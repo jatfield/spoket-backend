@@ -1,10 +1,9 @@
 'use strict';
 
 const Rider = require('../models/rider');
-const Wheel = require('../models/wheel');
-const getFbData = require('../tools/get-fb-data');
+const jwt = require ('jsonwebtoken');
 
-const getRiderByFb = async (req, res, next) => {
+const login = async (req, res, next) => {
   let rider;
 
   try {
@@ -28,41 +27,18 @@ const getRiderByFb = async (req, res, next) => {
       return next(errorResponse);
     }
   }
-  res.status(200).json({rider});
-};
 
-const getRiderMessages = async (req, res, next) => {
-
-  let rider, wheelsToApprove
-  let ridersToApprove = [];
-
+  let token;
   try {
-    rider = await Rider.findById(req.userData.spoketId);
+    token = jwt.sign({spoketId: rider._id, fbId: req.userData.id, fbToken: req.headers.authentication.split(' ')[1]}, process.env.SPOKET_JWT_PASS);
   } catch (error) {
     console.log(error);
-    const errorResponse = new Error('Error getting rider');
+    const errorResponse = new Error("Token generálás hiba.");
     errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
 
-  try {
-    wheelsToApprove = await Wheel.find({trip: rider.tripsCreated, approvedAt: null}).populate('rider').populate({path: 'trip', select: 'name'});
-  } catch (error) {
-    console.log(error);
-    const errorResponse = new Error('Error getting wheels');
-    errorResponse.errorCode = 500;
-    return next(errorResponse);  
-  }
-
-  for (let index = 0; index < wheelsToApprove.length; index++) {
-      const riderToApprove = await getFbData(wheelsToApprove[index].rider.fbId);
-      riderToApprove.spoketId = wheelsToApprove[index].rider._id;
-      riderToApprove.wheelId = wheelsToApprove[index]._id;
-      riderToApprove.tripName = wheelsToApprove[index].trip.name;
-      ridersToApprove.push(riderToApprove);
-  }
-  res.status(200).json({ridersToApprove});
+  res.status(200).json({rider, token});
 };
 
-exports.getRiderByFb = getRiderByFb;
-exports.getRiderMessages = getRiderMessages;
+exports.login = login;

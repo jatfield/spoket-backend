@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const checkAuth = require('../middleware/check-auth')
+const {checkAuth} = require('../middleware/check-auth')
 const wheelsRoutes = express.Router();
 
 const wheelsController = require('../controllers/wheels-controller');
