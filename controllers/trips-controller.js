@@ -2,14 +2,13 @@
 
 const Trip = require('../models/trip');
 const Rider = require('../models/rider');
-const Wheel = require('../models/wheel');
 const getFbData = require('../tools/get-fb-data');
 
 const getTrips = async (req, res, next) => {
   let trips;
 
   try {
-    trips = await Trip.find().select('-spots.name -spots.description -spots.ratings -spots.image -spots.reward -spots.flagged').populate('wheels', 'approvedAt completedAt');
+    trips = await Trip.find({'live.from': {$lte: new Date()}, 'live.till': {$gte: new Date()}}).select('-spots.name -spots.description -spots.ratings -spots.image -spots.reward -spots.flagged').populate('wheels', 'approvedAt completedAt');
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting trips');

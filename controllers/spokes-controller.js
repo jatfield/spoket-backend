@@ -93,8 +93,8 @@ const postSpoke = async (req, res, next) => {
 
   try {
     spoke.distance = calculateDistance(exifDec, spotCoordinates);
-    const spokeVerifiedAt = (wheel.trip.confirmation === 'none' || (wheel.trip.confirmation === 'photo' && spoke.distance < 150)) ? new Date() : null;
-    const spokeLocation = spokeVerifiedAt ? spot.location : exifDec;
+    const spokeVerifiedAt = (wheel.trip.confirmation === 'none' || (wheel.trip.confirmation === 'photo' && spoke.distance < 70)) ? new Date() : null;
+    const spokeLocation = exifDec;
     spoke.image.info = {
                 make: metadata.image.Make,
                 model: metadata.image.Model,

@@ -35,3 +35,7 @@ Authentication: 'token EAADQKvzHTU0BAE1DLa30uWZCPqC5elfOEewlHDPtVbgS7ZAqCtvdx74i
 
 ###
 GET http://{{host}}/api/riders/byfb/EAADQKvzHTU0BAJBmZABS5oxQMSZCav2pWhRP2lM3UEAhVUzeJC6Jr8KxpavZAYX71lIHhDFCzvKNfIzCsFjyIwHpaJIZCYmAFXIb460ZCxh8DVVtRR2CxJwnar8hFG1vBRg90F2ZBeN2mb8CCVHk3MDBUHudIrBfNYgaLVZAG59urKOmuAqqvI368bTRlgFaJ9VSMEhYHc4XgZDZD
+
+
+###
+GET https://api.kerekkalandok.hu/api/trips
