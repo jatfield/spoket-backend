@@ -3,6 +3,7 @@
 const Trip = require('../models/trip');
 const Rider = require('../models/rider');
 const getFbData = require('../tools/get-fb-data');
+const {s3Upload, s3GetUrl} = require('../tools/s3-upload')
 
 const getTrips = async (req, res, next) => {
   let trips;
@@ -87,6 +88,32 @@ const getTripRole = async (req, res, next) => {
   res.status(200).json({role});
 };
 
+const getSpotImageUrl = async (req, res, next) => {
+  let trip, spot, url;
+  try {
+    trip = await Trip.findById(req.params.tId);
+    spot = trip.spots.id(req.params.sId);
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error loading trip');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+if (spot && spot.image) {
+  try {
+    url = await s3GetUrl(spot.image)
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error getting spot image url');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+}
+  res.status(200).json({url});
+
+};
+
 exports.getTrips = getTrips;
 exports.getTripRole = getTripRole;
 exports.getTripParticipants = getTripParticipants;
+exports.getSpotImageUrl = getSpotImageUrl;
