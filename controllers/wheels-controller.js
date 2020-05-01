@@ -74,7 +74,7 @@ const postWheel = async (req, res, next)  => {
 
   const approved = trip.participation === "open" ? true : false;
   const wheel = new Wheel({trip, rider});
-  if (approved) wheel.approvedAt = Date.now;
+  if (approved) wheel.approvedAt = Date.now();
   trip.wheels.push(wheel);
 
   try {
