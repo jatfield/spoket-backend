@@ -32,9 +32,13 @@ const postSpoke = async (req, res, next) => {
   }
 
   //if image
-
+  var exifDec;
   try {
     metadata = await extractExif(image.buffer);
+    exifDec = {
+      lat: metadata.gps.GPSLatitude[0] + metadata.gps.GPSLatitude[1]/60 + metadata.gps.GPSLatitude[2]/3600,
+      lng: metadata.gps.GPSLongitude[0] + metadata.gps.GPSLongitude[1]/60 + metadata.gps.GPSLongitude[2]/3600
+    };
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Hiányzó vagy sérült metaadatok');
@@ -61,10 +65,6 @@ const postSpoke = async (req, res, next) => {
     lng: spot.location.lng
   };
 
-  const exifDec = {
-    lat: metadata.gps.GPSLatitude[0] + metadata.gps.GPSLatitude[1]/60 + metadata.gps.GPSLatitude[2]/3600,
-    lng: metadata.gps.GPSLongitude[0] + metadata.gps.GPSLongitude[1]/60 + metadata.gps.GPSLongitude[2]/3600
-  };
 
   let imageDate = null
   if (metadata.exif.DateTimeOriginal) {
