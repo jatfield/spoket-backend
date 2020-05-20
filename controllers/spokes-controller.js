@@ -37,7 +37,7 @@ const postSpoke = async (req, res, next) => {
     metadata = await extractExif(image.buffer);
   } catch (error) {
     console.log(error);
-    const errorResponse = new Error('Error extracting exif');
+    const errorResponse = new Error('Hiányzó vagy sérült metaadatok');
     errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
