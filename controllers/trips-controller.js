@@ -20,6 +20,22 @@ const getTrips = async (req, res, next) => {
   res.status(200).json({trips});
 };
 
+const getTrip = async (req, res, next) => {
+  const tId = req.params.tId;
+  let trip;
+
+  try {
+    trip = await Trip.findById(tId).populate('wheels', 'approvedAt completedAt');
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error getting trip');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+
+  res.status(200).json({trip});
+};
+
 const getTripParticipants = async (req, res, next) => {
   let creator, trip, riders;
 
@@ -113,6 +129,7 @@ if (spot && spot.image) {
 
 };
 
+exports.getTrip = getTrip;
 exports.getTrips = getTrips;
 exports.getTripRole = getTripRole;
 exports.getTripParticipants = getTripParticipants;

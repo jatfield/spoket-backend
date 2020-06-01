@@ -41,6 +41,10 @@ const getWheelsByRider = async (req, res, next) => {
     return next(errorResponse);
   }
 
+  for (let i = 0; i < wheels.length; i++) {
+    wheels[i].trip.spots.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1 );
+  }
+
   res.status(200).json({wheels});
 };
 
