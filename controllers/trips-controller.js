@@ -50,14 +50,15 @@ const getTripParticipants = async (req, res, next) => {
 
   try {
     let applicants = [], completers = [], participants = [];
-    trip = await Trip.findOne({'creator.rider': creator._id, _id: req.params.tId}, 'wheels').populate('wheels', 'rider completedAt approvedAt');
-    
+    trip = await Trip.findOne({'creator.rider': creator._id, _id: req.params.tId}, 'wheels spots')
+      .populate({path: 'wheels', select: 'rider completedAt approvedAt createdAt spokes'});
+
     for (let index = 0; index < trip.wheels.length; index++) {
-      
       const rider = await Rider.findById(trip.wheels[index].rider).lean();
       rider.fbData = await getFbData(rider.fbId);
       rider.wheel = trip.wheels[index];
-      
+      rider.wheel.spokes = rider.wheel.spokes.filter((spoke) => spoke.verifiedAt != null);
+
       if (!trip.wheels[index].approvedAt) {
         applicants.push(rider);
       } else if (trip.wheels[index].completedAt) {

@@ -9,7 +9,7 @@ const getWheel = async (req, res, next) => {
   let wheel;
 
   try {
-    wheel = await Wheel.findById(wId).populate("trip");    
+    wheel = await Wheel.findById(wId).populate('spoke.spot');    
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting wheel');

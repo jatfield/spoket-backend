@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const Wheel = require('../models/wheel');
+const Trip = require('../models/trip');
 const Jimp = require('jimp');
 const {s3Upload, s3GetUrl} = require('../tools/s3-upload')
 
@@ -136,19 +137,41 @@ const getSpokeUrl = async (req, res, next) => {
     errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
-if (spoke) {
-  try {
-    url = await s3GetUrl(spoke.image.key)
-  } catch (error) {
-    console.log(error);
-    const errorResponse = new Error('Error getting spoke image url');
-    errorResponse.errorCode = 500; 
-    return next(errorResponse);
+  if (spoke) {
+    try {
+     url = await s3GetUrl(spoke.image.key)
+    } catch (error) {
+      console.log(error);
+      const errorResponse = new Error('Error getting spoke image url');
+      errorResponse.errorCode = 500; 
+      return next(errorResponse);
+    }
   }
-}
   res.status(200).json({url});
 
 };
 
+const getSpokes = async (req, res, next) => {
+  let spokes;
+  
+  try {
+    const wheel = await Wheel.findById(req.params.wId).lean();
+    const trip = await Trip.findById(wheel.trip);
+    wheel.spokes = wheel.spokes.filter((spoke) => spoke.verifiedAt != null);
+    for (let index = 0; index < wheel.spokes.length; index++) {
+      wheel.spokes[index].spot = trip.spots.id(wheel.spokes[index].spot);
+    }
+    spokes = wheel.spokes
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error loading wheel');
+    errorResponse.errorCode = 500; 
+    return next(errorResponse);
+  }
+  res.status(200).json({spokes});
+}
+
+
+exports.getSpokes = getSpokes;
 exports.postSpoke = postSpoke;
 exports.getSpokeUrl = getSpokeUrl;
