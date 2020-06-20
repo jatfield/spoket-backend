@@ -2,9 +2,11 @@
 
 const Rider = require('../models/rider');
 const jwt = require ('jsonwebtoken');
+const getFbData = require('../tools/get-fb-data');
 
 const login = async (req, res, next) => {
   let rider;
+  const fbToken = req.headers.authentication.split(' ')[1]
 
   try {
     rider = await Rider.findOne({fbId: req.userData.id}, '_id');
@@ -28,9 +30,18 @@ const login = async (req, res, next) => {
     }
   }
 
+  try {
+    const fbData = await getFbData(req.userData.id, fbToken);
+    await rider.update({email: fbData.email});
+  } catch (error) {
+    console.log(error);
+    const errorResponse = new Error('Error saving rider');
+    errorResponse.errorCode = 500; 
+  }
+
   let token;
   try {
-    token = jwt.sign({spoketId: rider._id, fbId: req.userData.id, fbToken: req.headers.authentication.split(' ')[1]}, process.env.SPOKET_JWT_PASS);
+    token = jwt.sign({spoketId: rider._id, fbId: req.userData.id, fbToken}, process.env.SPOKET_JWT_PASS);
   } catch (error) {
     console.log(error);
     const errorResponse = new Error("Token generálás hiba.");

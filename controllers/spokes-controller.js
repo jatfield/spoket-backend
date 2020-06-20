@@ -13,7 +13,9 @@ const postSpoke = async (req, res, next) => {
   //check user
   //if image -> metadata, if exif -> distance,  confirmation none/photo/manual
   //return: resized url, distance, spoke
-  console.log('POST spoke');
+  //console.log('POST spoke');
+
+  //console.time("spoke processing", "bla");
 
   const image = req.file;
   let resizedImage;
@@ -32,6 +34,8 @@ const postSpoke = async (req, res, next) => {
     return next(errorResponse);
   }
 
+  //console.timeLog("spoke processing","Exif start");
+
   //if image
   var exifDec;
   try {
@@ -46,6 +50,9 @@ const postSpoke = async (req, res, next) => {
     errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
+
+  
+  //console.timeLog("spoke processing","Imageprocess start");
 
   let jImage;
 
@@ -73,6 +80,8 @@ const postSpoke = async (req, res, next) => {
     date[0] = date[0].replace(/:/g,"-");
     imageDate = Date.parse(date.join("T"));
   }
+  
+  //console.timeLog("spoke processing","upload start");
 
   try {
     let uploadPromises = [];
@@ -89,6 +98,9 @@ const postSpoke = async (req, res, next) => {
     errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
+
+  
+  //console.timeLog("spoke processing","save start");
 
   // //end if image 
 
@@ -114,6 +126,8 @@ const postSpoke = async (req, res, next) => {
     errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
+  
+  //console.timeEnd("spoke processing","save end");
 
   if (metadata.gps.GPSLatitude) {
     res.status(200).json({gps: metadata.gps, spoke, resizedUrl});
