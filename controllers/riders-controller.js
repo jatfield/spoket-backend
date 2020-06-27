@@ -9,7 +9,7 @@ const login = async (req, res, next) => {
   const fbToken = req.headers.authentication.split(' ')[1]
 
   try {
-    rider = await Rider.findOne({fbId: req.userData.id}, '_id');
+    rider = await Rider.findOne({fbId: req.userData.id}, '_id email');
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error getting rider');
