@@ -85,10 +85,10 @@ const postSpoke = async (req, res, next) => {
 
   try {
     let uploadPromises = [];
-    spoke.image.key = `photos/trip_${wheel.trip._id}/wheel_${wheel._id}/spoke_${spoke._id}/${Date.now()}_original_${image.originalname}`
-    uploadPromises.push(s3Upload(spoke.image.key, image.buffer, image.mimetype))
-    spoke.image.resizedKey = `photos/trip_${wheel.trip._id}/wheel_${wheel._id}/spoke_${spoke._id}/${Date.now()}_resized_${image.originalname}`
-    uploadPromises.push(s3Upload(spoke.image.resizedKey, resizedImage, image.mimetype));
+    //spoke.image.key = `photos/trip_${wheel.trip._id}/wheel_${wheel._id}/spoke_${spoke._id}/${Date.now()}_original_${image.originalname}`
+    //uploadPromises.push(s3Upload(spoke.image.key, image.buffer, image.mimetype))
+    spoke.image.key = `photos/trip_${wheel.trip._id}/wheel_${wheel._id}/spoke_${spoke._id}/${Date.now()}_resized_${image.originalname}`
+    uploadPromises.push(s3Upload(spoke.image.key, resizedImage, image.mimetype));
     const uploadResults = await Promise.all(uploadPromises);
     resizedUrl = uploadResults[1];
     url = uploadResults[0];

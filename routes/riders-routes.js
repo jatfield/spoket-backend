@@ -1,13 +1,16 @@
 'use strict';
 
 const express = require('express');
-const {checkFbAuth} = require('../middleware/check-auth')
+const {checkAuth} = require('../middleware/check-auth')
 const ridersRoutes = express.Router();
 
 const ridersController = require('../controllers/riders-controller');
 
 
-ridersRoutes.use(checkFbAuth); //auth token required 
-ridersRoutes.get('/login', ridersController.login);
+ridersRoutes.get('/getresettoken/:email', ridersController.getResetToken);
+ridersRoutes.post('/login', ridersController.login);
+ridersRoutes.use(checkAuth); //auth token required 
+
+ridersRoutes.put('/setpassword', ridersController.setPassword);
 
 module.exports = ridersRoutes;

@@ -34,6 +34,20 @@ GET http://{{host}}/api/riders/messages
 Authentication: 'token EAADQKvzHTU0BAE1DLa30uWZCPqC5elfOEewlHDPtVbgS7ZAqCtvdx74iz4lYLSOTLl6BZClNj1jFrFltCqZBsYsLvTv4HnGkKymoIhvq68LFC7dBKWt3SrzzoZAYo3WkrCZCOuYZC5NlzCzK8mPkGTMzWFSfc6SuwRyrVAZCRAZBZBS9VYwLnZAH5qJWVxJCGJbZCX8ZD'
 
 ###
+POST  http://{{host}}/api/riders/login HTTP/1.1
+Content-Type: application/json
+
+{"email": "jatfield@gmail.com", 
+"password": "valid"}
+
+###
+GET http://{{host}}/api/riders/getresettoken/jatfield@gmail.com
+
+###
+PUT http://{{host}}/api/riders/setpassword?email=jatfield@gmail.com&password=valid
+Authentication: token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzcG9rZXRJZCI6IjVlZjc3OTkzMGZhY2M3NDVkNDVmZDg4MiIsImlhdCI6MTYyOTI4NDc1NSwiZXhwIjoxNjI5Mjg2NTU1fQ.EWmvytk3qM1mbovxjvXe13Cvgyhiny1FXoaIqfrG4JY
+
+###
 GET http://{{host}}/api/riders/byfb/EAADQKvzHTU0BAJBmZABS5oxQMSZCav2pWhRP2lM3UEAhVUzeJC6Jr8KxpavZAYX71lIHhDFCzvKNfIzCsFjyIwHpaJIZCYmAFXIb460ZCxh8DVVtRR2CxJwnar8hFG1vBRg90F2ZBeN2mb8CCVHk3MDBUHudIrBfNYgaLVZAG59urKOmuAqqvI368bTRlgFaJ9VSMEhYHc4XgZDZD
 
 

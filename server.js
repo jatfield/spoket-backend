@@ -31,7 +31,7 @@ app.use('/api/riders', ridersRoutes);
 app.use((error, req, res, next) => {
   // middleware with four params are treated as error function
   if (res.headerSent) return next(error);
-  res.status(error.code || 500).json({message: error.message || 'Unknown error occured'});
+  res.status(error.errorCode || 500).json({message: error.message || 'Unknown error occured'});
 })
 
 mongoose.connect(process.env.SPOKET_MONGO_DB_URL, { useNewUrlParser: true })

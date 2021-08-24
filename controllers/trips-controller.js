@@ -55,7 +55,7 @@ const getTripParticipants = async (req, res, next) => {
 
     for (let index = 0; index < trip.wheels.length; index++) {
       const rider = await Rider.findById(trip.wheels[index].rider).lean();
-      rider.fbData = await getFbData(rider.fbId);
+     // rider.fbData = await getFbData(rider.fbId);
       rider.wheel = trip.wheels[index];
       rider.wheel.spokes = rider.wheel.spokes.filter((spoke) => spoke.verifiedAt != null);
 

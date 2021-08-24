@@ -30,7 +30,6 @@ checkAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authentication.split(' ');    
     const token = authHeader[1];
-    
     if (!token) {
       const errorResponse = new Error('Missing token.');
       errorResponse.errorCode = 401; 
@@ -38,7 +37,7 @@ checkAuth = async (req, res, next) => {
     }
     
     decodedToken = jwt.verify(token, process.env.SPOKET_JWT_PASS);
-    req.userData = {spoketId, fbToken} = decodedToken;
+    req.userData = {spoketId, email} = decodedToken;
     next();
   } catch (error) {
     console.log(error);
