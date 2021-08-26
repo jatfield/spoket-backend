@@ -9,8 +9,6 @@ const sendMail = async (subject, title, message, recipients) => {
     const transporter = nodemailer.createTransport({
         host: process.env.SPOKET_MAILER_HOST,
         port: process.env.SPOKET_MAILER_PORT,
-        secure: process.env.SPOKET_MAILER_SECURE,
-        tls: {rejectUnauthorized: false},
         auth: {user: process.env.SPOKET_MAILER_USER, pass: process.env.SPOKET_MAILER_PASSWORD}
     });
 
