@@ -28,7 +28,7 @@ const getResetToken = async (req, res, next) => {
     errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
-  const message = `Az alábbi hivatkozásra kattintva új jelszót állíthat be a ${rider.email} e-mail címhez tartozó fiókhoz:<br/><a href ="${process.env.SPOKET_FRONTEND_URL}/passwordreset?token=${token}">http://localhost:3000/passwordreset?token=${token}</a>`;
+  const message = `Az alábbi hivatkozásra kattintva új jelszót állíthat be a ${rider.email} e-mail címhez tartozó fiókhoz:<br/><a href ="${process.env.SPOKET_FRONTEND_URL}/passwordreset?token=${token}">${process.env.SPOKET_FRONTEND_URL}/passwordreset?token=${token}</a>`;
   let mailSuccess = false;
 
   try {   
