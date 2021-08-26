@@ -22,7 +22,7 @@ const getResetToken = async (req, res, next) => {
     return next(errorResponse);
   } else {
     if (rider.passwordChanged && new Date().getTime() - new Date (rider.passwordChanged).getTime() < 30*60000) {
-      const errorResponse = new Error('Password change too frequent');
+      const errorResponse = new Error('Túl gyakori jelszómódosítás - próbálja később');
       errorResponse.errorCode = 401; 
       return next(errorResponse);
     }
