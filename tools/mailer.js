@@ -7,18 +7,18 @@ const sendMail = async (subject, title, message, recipients) => {
     messageToSend += `<p>${message}</p>`
 
     const transporter = nodemailer.createTransport({
-        host: "smtppro.zoho.com",
-        port: 465,
-        secure: "SSL",
+        host: process.env.SPOKET_MAILER_HOST,
+        port: process.env.SPOKET_MAILER_PORT,
+        secure: process.env.SPOKET_MAILER_SECURE,
         tls: {rejectUnauthorized: false},
-        auth: {user: "noreply@jorendben.hu", pass:"0SdDhZcXnfD6"}
+        auth: {user: process.env.SPOKET_MAILER_USER, pass: process.env.SPOKET_MAILER_PASSWORD}
     });
 
     let response;
 
     try {
         response = await transporter.sendMail({
-            from: "noreply@jorendben.hu",
+            from: process.env.SPOKET_MAILER_FROM_ADDRESS,
             to: messageRecipients,
             subject,
             text: messageToSend,

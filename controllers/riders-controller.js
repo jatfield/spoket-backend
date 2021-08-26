@@ -2,7 +2,6 @@
 
 const Rider = require('../models/rider');
 const jwt = require ('jsonwebtoken');
-const getFbData = require('../tools/get-fb-data');
 const sendMail = require('../tools/mailer');
 
 const getResetToken = async (req, res, next) => {
@@ -12,13 +11,23 @@ const getResetToken = async (req, res, next) => {
     rider = await Rider.findOne({email: req.params.email}, '_id email passwordChanged');
   } catch (error) {
     console.log(error);
-  }
-
-  if (rider.passwordChanged && new Date().getTime() - new Date (rider.passwordChanged).getTime() < 30*60000) {
-    const errorResponse = new Error('Password change too frequent');
-    errorResponse.errorCode = 401; 
+    const errorResponse = new Error("Hiba a felhasználó lekérdezése közben");
+    errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
+
+  if (!rider) {
+    const errorResponse = new Error("Nincs felhasználó ezzel az e-mail címmel.");
+    errorResponse.errorCode = 404; 
+    return next(errorResponse);
+  } else {
+    if (rider.passwordChanged && new Date().getTime() - new Date (rider.passwordChanged).getTime() < 30*60000) {
+      const errorResponse = new Error('Password change too frequent');
+      errorResponse.errorCode = 401; 
+      return next(errorResponse);
+    }
+  }
+  
 
   try {
     token = jwt.sign({spoketId: rider._id, email: rider.email}, process.env.SPOKET_JWT_PASS, {expiresIn: "30m"});
@@ -72,7 +81,7 @@ const login = async (req, res, next) => {
     rider = await Rider.findOne({email: req.body.email});
   } catch (error) {
     console.log(error);
-    const errorResponse = new Error('Error getting rider');
+    const errorResponse = new Error('Hiba a felhasználó lekérdezése közben');
     errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
@@ -80,14 +89,14 @@ const login = async (req, res, next) => {
   try {
     const passed = await rider.validatePassword(req.body.password);
     if (!passed) {  
-      const errorResponse = new Error('Login failed');
+      const errorResponse = new Error('Hibás bejelentkezési adatok');
       errorResponse.errorCode = 401; 
       return next(errorResponse);    
     }
   } catch (error) {
     console.log(error);
-    const errorResponse = new Error('Error validating password');
-    errorResponse.errorCode = 500; 
+    const errorResponse = new Error('Hibás bejelentkezési adatok');
+    errorResponse.errorCode = 401; 
     return next(errorResponse);    
   }
 
