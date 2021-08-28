@@ -50,7 +50,6 @@ const postSpoke = async (req, res, next) => {
     errorResponse.errorCode = 500; 
     return next(errorResponse);
   }
-
   
   //console.timeLog("spoke processing","Imageprocess start");
 
@@ -75,7 +74,8 @@ const postSpoke = async (req, res, next) => {
 
 
   let imageDate = null
-  if (metadata.exif.DateTimeOriginal) {
+  if (metadata.exif.DateTimeOriginal) {   
+    //DateTimeOriginal - 2019:05:01 13:54:46
     let date = metadata.exif.DateTimeOriginal.split(" ");
     date[0] = date[0].replace(/:/g,"-");
     imageDate = Date.parse(date.join("T"));
@@ -106,7 +106,9 @@ const postSpoke = async (req, res, next) => {
 
   try {
     spoke.distance = calculateDistance(exifDec, spotCoordinates);
-    const spokeVerifiedAt = (wheel.trip.confirmation === 'none' || (wheel.trip.confirmation === 'photo' && spoke.distance < 70)) ? new Date() : null;
+    const verificationDate = imageDate || new Date()
+    console.log(verificationDate);
+    const spokeVerifiedAt = (wheel.trip.confirmation === 'none' || (wheel.trip.confirmation === 'photo' && spoke.distance < 70)) ? verificationDate : null;
     const spokeLocation = exifDec;
     spoke.image.info = {
                 make: metadata.image.Make,
@@ -175,7 +177,7 @@ const getSpokes = async (req, res, next) => {
     for (let index = 0; index < wheel.spokes.length; index++) {
       wheel.spokes[index].spot = trip.spots.id(wheel.spokes[index].spot);
     }
-    spokes = wheel.spokes
+    spokes = wheel.spokes.sort((s, ss) => ss.verifiedAt - s.verifiedAt)
   } catch (error) {
     console.log(error);
     const errorResponse = new Error('Error loading wheel');
