@@ -107,7 +107,7 @@ const postSpoke = async (req, res, next) => {
   try {
     spoke.distance = calculateDistance(exifDec, spotCoordinates);
     const verificationDate = imageDate || new Date()
-    console.log(verificationDate);
+    //console.log(verificationDate);
     const spokeVerifiedAt = (wheel.trip.confirmation === 'none' || (wheel.trip.confirmation === 'photo' && spoke.distance < 70)) ? verificationDate : null;
     const spokeLocation = exifDec;
     spoke.image.info = {
@@ -118,7 +118,7 @@ const postSpoke = async (req, res, next) => {
                 lng: exifDec.lng};
     spoke.verifiedAt = spokeVerifiedAt;
     spoke.location = spokeLocation;
-    if (spoke.isNew) {
+    if (spoke.isNew && !wheel.spokes.some(spoke => spoke.spot.equals(spot._id))) {
       wheel.spokes.push(spoke);
     }
     await wheel.save();
